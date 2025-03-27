@@ -106,7 +106,7 @@ class StateBank:
             #If username found, search for valid password
             password = input("Please enter your password: ")
             for value in self.bank_users.values():
-                if (value.password == password):
+                if (value.password == password and value.username == username):
                     self.customer_logged_in = value
                     
                     print(f"\nWelcome, {value.f_name}!  How can I help you?")
@@ -114,7 +114,7 @@ class StateBank:
                     return
                     
             attempts -= 1
-            print(f"That password does not exist. You have {attempts} remaining before lockout.\n")
+            print(f"Username and password do not match. You have {attempts} remaining before lockout.\n")
             
         print("Login attempts exceded.  Returning to main menu\n")
 
