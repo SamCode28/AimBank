@@ -1,8 +1,9 @@
 from main import bank_users
 from signup import Signup
 
-class Bank: 
-    customer_logged_in=None
+class StateBank: 
+    def __init__(self):
+        self.customer_logged_in=None
 
     def opening_message(self):
         print("\nWelcome to State Bank!\n")

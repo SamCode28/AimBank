@@ -1,4 +1,4 @@
-from bank import Bank
+from aim_bank import StateBank
 from customer import Customer
 
 
@@ -10,5 +10,5 @@ bank_users = {
     "Sarah Sugarhill": user2
 }
 
-test = Bank()
+test = StateBank()
 test.opening_message()
