@@ -9,6 +9,5 @@ bank_users = {
     "Sarah Sugarhill": user2
 }
 
-
 state_bank = StateBank(bank_users)
 state_bank.start()

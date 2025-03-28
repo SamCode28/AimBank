@@ -1,20 +1,26 @@
 from customer import Customer
+from docx import Document
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt
+from datetime import datetime
 
+#Stored in variable to reduce clutter
 customer_options1 = """Enter a digit to choose from the following options:
 [1] Login
 [2] Create Account
 [3] Quit
 """
-customer_options2 = """    [1] Show Balance
-    [2] Deposit
-    [3] Withdrawal
-    [4] Print Statement
-    [5] Email Statement
-    [6] Quit
+customer_options2 = """[1] Show Balance
+[2] Deposit
+[3] Withdrawal
+[4] Print Statement
+[5] Email Statement
+[6] Quit
 """
 
 class StateBank: 
     def __init__(self, bank_users : dict):
+        self.name = "Sate Bank"
         self.customer_logged_in=None
         self.bank_users = bank_users
 
@@ -49,14 +55,14 @@ class StateBank:
                 print(customer_options2)
                 response = int(input("Enter Digit: "))
             except ValueError:
-                print("Invalid number, please try again")
+                print("\nInvalid number, please try again")
                 continue
             else:
                 if(response < 0 or response > 6):
-                    print("The number entered must be 1-6.  Please try again.")
+                    print("\nThe number entered must be 1-6.  Please try again.")
 
             if(response == 1):
-                print(f"\nYou have ${self.customer_logged_in.balance} in your account.\n")
+                print(f"\nBalance: ${self.customer_logged_in.balance}.\n")
 
             elif(response == 2):
                 while(True):
@@ -69,21 +75,68 @@ class StateBank:
 
                     else:
                         self.customer_logged_in.deposit(amount)
-                        print(f"Your account has been credited with {amount}.\n")
+                        print(f"Your account has been credited with ${amount}.\n")
                         break
 
             elif(response == 3):
                 self.customer_logged_in.withdrawal()
 
             elif(response == 4):
-                print(self.customer_logged_in)
+                self.generate_statement()
 
             elif(response == 5):
                 self.email_statement()
 
             elif(response == 6):
                 print("Returning to main menu.\n")
-                return                
+                return
+
+    def generate_statement(self):
+        print("Statement Printed.\n")
+
+        customer = self.customer_logged_in
+        doc = Document()
+        time = datetime.now()
+
+        #a. Set time header
+        time_header = doc.add_heading(f"{time}", level=1)
+        time_header.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        time_header.style.font.size = Pt(46)
+
+        #b. Set name of bank
+        bank_name_heading = doc.add_heading(f"{self.name}", level=1)
+        bank_name_heading.style.font.size = Pt(36)
+
+        #c. Set title to "My Statement"
+        my_statement_heading = doc.add_heading("My Statement", level=1)
+        my_statement_heading.style.font.size = Pt(24)
+
+        #d. Set Customer name
+        doc.add_paragraph(f"Name: {customer.f_name} {customer.l_name}")
+
+        #e. Display initial balance
+        doc.add_paragraph(f"Initial Balance: ${customer.initial_balance}")
+
+        #f. Display all deposits made
+        doc.add_paragraph(f"Deposits made: {customer.deposits_made}")
+
+        #g. Display total deposits sum
+        doc.add_paragraph(f"Deposits Total: ${customer.get_deposits_total()}")
+
+        #h. Display all withdrawals
+        doc.add_paragraph(f"Withdrawals Made: {customer.withdrawals_made}")
+
+        #i. Display total withdrawals sum
+        doc.add_paragraph(f"Withdrawals Total: ${customer.get_withdrawals_total()}")
+
+        #Bonus.  Add overdraft fees
+        doc.add_paragraph(f"Overdraft fees: ${customer.overdraft_fees}")
+
+        #j. Display final balance
+        doc.add_paragraph(f'Final Balance: ${customer.balance}')
+
+        #doc.add_paragraph('TEST item in unordered list', style='List Bullet')
+        doc.save(f'{customer.f_name}_{customer.l_name}_Bank_Statment.docx')
     
     def email_statement(self):
         print(f"An email has been sent to {self.customer_logged_in.email}.\n")
