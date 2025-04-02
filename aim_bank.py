@@ -244,8 +244,6 @@ class StateBank:
         #Username is first letter of name followed by last name for consistency
         username = (f_name[0] + l_name).lower()
 
-        print(f"\nWelcome, {f_name}!  The username '{username}' has automatically generated for you.")
-
         #Password must be:
         # 6-12 characters
         # 1 lowercase
